@@ -65,20 +65,27 @@ def get(url, *args, **request_kwargs):
     request_kwargs.setdefault('headers', HEADERS)
     request_kwargs.setdefault('allow_redirects', True)
 
-    response = requests.get(url, **request_kwargs)
-    response.raise_for_status()
+    try:
+        response = requests.get(url, **request_kwargs)
+    except requests.exceptions.RequestException as e:
+        response = None
 
-    icons = set()
+    if response:
+        response.raise_for_status()
 
-    default_icon = default(response.url, **request_kwargs)
-    if default_icon:
-        icons.add(default_icon)
+        icons = set()
 
-    link_icons = tags(response.url, response.text)
-    if link_icons:
-        icons.update(link_icons)
+        default_icon = default(response.url, **request_kwargs)
+        if default_icon:
+            icons.add(default_icon)
 
-    return sorted(icons, key=lambda i: i.width + i.height, reverse=True)
+        link_icons = tags(response.url, response.text)
+        if link_icons:
+            icons.update(link_icons)
+
+        return sorted(icons, key=lambda i: i.width + i.height, reverse=True)
+
+    return list()
 
 
 def default(url, **request_kwargs):
