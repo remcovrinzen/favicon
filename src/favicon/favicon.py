@@ -31,6 +31,9 @@ LINK_RELS = [
     'shortcut icon',
     'apple-touch-icon',
     'apple-touch-icon-precomposed',
+	'apple-touch-startup-image',
+	'mask-icon',
+	'fluid-icon'
 ]
 
 META_NAMES = ['msapplication-TileImage', 'og:image']
